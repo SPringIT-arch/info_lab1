@@ -42,17 +42,43 @@ def result(num : str, Out, In = 10) -> str:
     if '.' in num:
         if In == 'B' and Out == 'Fib':
             return tentofib(bergmantoten(num))
+        if In == 'B' and Out == 'Fact':
+            return tentofact(bergmantoten(num))
         if In == 'B' and int(Out) in range(1,37):
             return fract(bergmantoten(num), int(Out))
 
         return fract(num, int(Out), int(In))
 
     if In == 'Fib':
+        if Out == 'Fact':
+            return tentofact(str(fibtoten(num)))
         return toanotherns(fibtoten(num), int(Out))
     if Out == 'Fib':
+        if In == 'Fact':
+            return tentofib(str(facttoten(num)))
         return tentofib(int(num, In))
 
     return toanotherns(num, int(Out), int(In))
+
+
+def tentofact(num : str) -> str:
+    num = int(float(num))
+    div = 2
+    rez = ''
+
+    while num != 0:
+        rez += str(num % div) if num % div < 10 else dict[num % div]
+        num //= div
+        div += 1
+
+    return rez[::-1]
+
+
+def facttoten(num : str) -> int:
+    num = num[::-1]
+    rez = sum([int(num[i]) * math.factorial(i + 1) for i in range(len(num))])
+
+    return rez
 
 
 def fibtoten(num : str) -> int:
@@ -64,7 +90,7 @@ def fibtoten(num : str) -> int:
     return rez
 
 
-def tentofib(num : str):
+def tentofib(num : str) -> str:
     num = int(float(num))
 
     if num in fibnums:
