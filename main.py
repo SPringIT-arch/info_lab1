@@ -24,12 +24,13 @@ def main():
         else:
             break
 
-def result(num : str, Out, In = 10):
+
+def result(num : str, Out, In = 10) -> str:
     if '.' in num: return fract(num, Out, In)
     return toanotherns(num, Out, In)
 
 
-def fract(num : str, Out, In = 10):
+def fract(num : str, Out, In = 10) -> str:
     bd = beforedot(num, Out, In)
     ad = afterdot(num, Out, In)
     return bd + '.' + ad
@@ -82,7 +83,6 @@ def numsep(num : str) -> tuple:
 
 
 def toanotherns(num : str, Out, In = 10) -> str:
-        
     num = int(num, In)
     rez = ''
 
