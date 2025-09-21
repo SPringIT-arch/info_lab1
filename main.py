@@ -53,7 +53,7 @@ def afterdot(num : str, Out, In = 10) -> str:
     rez = ''
     while num != float(0):
         num *= Out
-        rez += str(int(num))
+        rez += str(int(num)) if int(num) < 10 else dict[int(num)]
         num -= int(num)
     
         if len(rez) > 100: break
