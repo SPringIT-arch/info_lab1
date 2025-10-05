@@ -2,12 +2,6 @@ import os
 import math
 import json
 
-from itertools import product
-
-file = open('labs\\infolab1\\datal.json', 'r')
-data = json.load(file)
-kys = list(data.keys())
-
 fibnums = [1, 1]
 
 for _ in range(100):
@@ -106,33 +100,19 @@ def tentofib(num : str) -> str:
     
     num = int(float(num))
 
-    for kl in kys:
-        if num <= int(kl):
-            if num == int(kl):
-                return data[kl]
+    if num == 0: return '0'
+    if num == 1: return '1'
+
+    for ind in fibnums[::-1]:
+        if num >= ind:
+            if num == ind:
+                return '1' + '0'*(fibnums.index(ind) - 1)
             else:
                 break
     
-    raz = num - fibnums[len(data[kl])]
-    lnr = len(rmzero(data[kl][1:]))
-    raz = f'{tentofib(raz):{0}>{lnr}}'
+    raz = num - ind
 
-    return concat(data[kl], raz)
-
-    if num in fibnums:
-        return '1' + '0'*(fibnums.index(num) - 1)
-
-    for i in fibnums:
-        if i >= num:
-            flag = fibnums.index(i) - 1
-            break
-
-    templates = list(product(['0', '1'], repeat=flag))
-    templates = [''.join(i) for i in templates][::-1]
-    
-    for templ in templates:
-        if fibtoten(templ) == num:
-            return templ
+    return '10' + f'{tentofib(str(raz)):{0}>{fibnums.index(ind) - 2}}'
 
 
 def bergmantoten(num : str) -> str:
