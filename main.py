@@ -1,7 +1,12 @@
 import os
 import math
+import json
 
 from itertools import product
+
+file = open('labs\\infolab1\\datal.json', 'r')
+data = json.load(file)
+kys = list(data.keys())
 
 fibnums = [1, 1]
 
@@ -26,7 +31,7 @@ def main():
         Out = input("В какую СС нужно перевести число? ")
 
         print()
-        print("Результат: ", result(num, Out, In))
+        print("Результат:", result(num, Out, In))
         print()
 
         if input("Продолжить? (Y,N default - N): ") == "Y":
@@ -56,8 +61,11 @@ def result(num : str, Out, In = 10) -> str:
     if Out == 'Fib':
         if In == 'Fact':
             return tentofib(str(facttoten(num)))
-        return tentofib(int(num, In))
-
+        return tentofib(str(int(num, int(In))))
+    if In == 'Fact':
+        return toanotherns(str(facttoten(num)), int(Out), In = 10)
+    if Out == 'Fact':
+        return tentofact(int(num, int(In)))
     return toanotherns(num, int(Out), int(In))
 
 
@@ -76,7 +84,11 @@ def tentofact(num : str) -> str:
 
 def facttoten(num : str) -> int:
     num = num[::-1]
-    rez = sum([int(num[i]) * math.factorial(i + 1) for i in range(len(num))])
+    for j in range(len(num)):
+        if not(int(num[j], j+2)):
+            return None
+
+    rez = sum([int(num[i], 36) * math.factorial(i + 1) for i in range(len(num))])
 
     return rez
 
@@ -91,7 +103,21 @@ def fibtoten(num : str) -> int:
 
 
 def tentofib(num : str) -> str:
+    
     num = int(float(num))
+
+    for kl in kys:
+        if num <= int(kl):
+            if num == int(kl):
+                return data[kl]
+            else:
+                break
+    
+    raz = num - fibnums[len(data[kl])]
+    lnr = len(rmzero(data[kl][1:]))
+    raz = f'{tentofib(raz):{0}>{lnr}}'
+
+    return concat(data[kl], raz)
 
     if num in fibnums:
         return '1' + '0'*(fibnums.index(num) - 1)
@@ -119,6 +145,18 @@ def bergmantoten(num : str) -> str:
     rez = rezbd + rezad
 
     return str(rez)
+
+
+def rmzero(strz : str) -> str:
+    if '1' not in strz:
+        return '0'
+    for i in range(len(strz)):
+        if strz[i] == '1':
+            return strz[i:]
+
+
+def concat(str1 : str, str2 : str) -> str:
+    return str1[: -len(str2)] + str2
 
 
 def fract(num : str, Out, In = 10) -> str:
@@ -174,7 +212,7 @@ def numsep(num : str) -> tuple:
 
 
 def toanotherns(num : str, Out, In = 10) -> str:
-    num = int(num, In)
+    num = int(str(num), In)
     rez = ''
 
     while num > 0:
