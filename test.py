@@ -17,6 +17,26 @@ def rever(num : str) -> str:
     return num[num.index('^') + 1 : -1]
 
 
+def tolist(num : str) -> list:
+    rez = []
+
+    while num:
+        for i in range(len(num)):
+            if num[i] != '{':
+                rez.append(num[i])
+                num = num[1:]
+                break
+            else:
+                for j in range(len(num)):
+                    if num[j] == '}':
+                        rez.append(num[i:j+1])
+                        num = num[j+1:]
+                        break
+                break
+
+    return rez[::-1]
+
+
 def tentoasym(sys : int, num : str) -> str:
     
     if str(num) == '0': return '0'
@@ -28,28 +48,48 @@ def tentoasym(sys : int, num : str) -> str:
     flag = False
     
     for i in range(len(num)):
-        if int(num[i], sys) > sys / 2:
+        if int(num[i], sys) + int(flag) > sys // 2:
             if int(num[i], sys) - sys + int(flag) > 0:
-                rez.append(toanotherns(abs(int(num[i], sys) - sys + int(flag)), sys))
+                rez.append(str(abs(int(num[i], sys) - sys + int(flag))))
             else:
-                rez.append(rever(toanotherns(abs(int(num[i], sys) - sys + int(flag)), sys)))
+                rez.append(rever(str(abs(int(num[i], sys) - sys + int(flag)))))
             flag = True
         else:
             if int(num[i], sys) + int(flag) > 0:
-                rez.append(toanotherns(abs(int(num[i], sys) + int(flag)), sys))
+                rez.append(str(abs(int(num[i], sys) + int(flag))))
             else:
-                rez.append(rever(toanotherns(abs(int(num[i], sys) + int(flag)), sys)))
+                rez.append(rever(str(abs(int(num[i], sys) + int(flag)))))
             flag = False
     
+    if flag:
+        rez.append(str(int(flag)))
+
     if more:
         return ''.join(rez[::-1])
     else:
         return ''.join(map(rever, rez[::-1]))
 
 
-# asymtoten()
+def asymtoten(num : list, In : int) -> int:
+    rez = 0
+    
+    for i in range(len(num)):
+        if '{' in num[i]:
+            rez += -int(rever(num[i])) * (In**i)
+        else:
+            rez += int(num[i]) * (In**i)
+
+    return rez
 
 
-print(tentoasym(3, 203575))
-print(tentoasym(3, -203575))
-print(toanotherns(1205, 5))
+
+
+
+print(tentoasym(5, 1205))
+print(tentoasym(5, -1205))
+
+print(asymtoten(tentoasym(5, 1205)[1], 5))
+print(asymtoten(tentoasym(5, -1205)[1], 5))
+
+print(tolist('{^2}02{^1}0'))
+print(tolist('20{^2}10'))

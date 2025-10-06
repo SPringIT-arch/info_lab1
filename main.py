@@ -38,28 +38,113 @@ def result(num : str, Out, In = 10) -> str:
     if Out == In: return num
     
     if '.' in num:
-        if In == 'B' and Out == 'Fib':
-            return tentofib(bergmantoten(num))
-        if In == 'B' and Out == 'Fact':
-            return tentofact(bergmantoten(num))
-        if In == 'B' and int(Out) in range(1,37):
-            return fract(bergmantoten(num), int(Out))
+        if In == 'B': innum = bergmantoten(num)
+        elif In in map(str, range(2,37)): innum = fract(num, 10, int(In))
 
-        return fract(num, int(Out), int(In))
+        if Out in map(str, range(2,37)): outnum = fract(innum, int(Out), 10)
 
-    if In == 'Fib':
-        if Out == 'Fact':
-            return tentofact(str(fibtoten(num)))
-        return toanotherns(fibtoten(num), int(Out))
-    if Out == 'Fib':
-        if In == 'Fact':
-            return tentofib(str(facttoten(num)))
-        return tentofib(str(int(num, int(In))))
-    if In == 'Fact':
-        return toanotherns(str(facttoten(num)), int(Out), In = 10)
-    if Out == 'Fact':
-        return tentofact(int(num, int(In)))
-    return toanotherns(num, int(Out), int(In))
+        innum = int(float(innum))
+
+        if Out == 'Fib': outnum = tentofib(str(innum))
+        elif Out == 'Fact': outnum = tentofact(str(innum))
+        elif 'C' in Out: outnum = tentosym(int(Out[:-1]), innum)
+
+        return outnum
+        
+    if In in map(str, range(2,37)): innum = int(num, int(In))
+    elif In == 'Fib': innum = fibtoten(num)
+    elif In == 'Fact': innum = facttoten(num)
+    elif 'C' in In: innum = symtoten(tolist(num), int(In[:-1]))
+
+    if Out in map(str, range(2,37)): outnum = toanotherns(str(innum), int(Out))
+    elif Out == 'Fib': outnum = tentofib(str(innum))
+    elif Out == 'Fact': outnum = tentofact(str(innum))
+    elif 'C' in Out: outnum = tentosym(int(Out[:-1]), innum)
+
+    return outnum
+
+
+def rmzero(strz : str) -> str:
+    if '1' not in strz:
+        return '0'
+    for i in range(len(strz)):
+        if strz[i] == '1':
+            return strz[i:]
+
+
+def concat(str1 : str, str2 : str) -> str:
+    return str1[: -len(str2)] + str2
+
+
+def rever(num : str) -> str:
+    if num == '0': return '0'
+    if '{' not in num: return '{^'+num+'}'
+    return num[num.index('^') + 1 : -1]
+
+
+def tolist(num : str) -> list:
+    rez = []
+
+    while num:
+        for i in range(len(num)):
+            if num[i] != '{':
+                rez.append(num[i])
+                num = num[1:]
+                break
+            else:
+                for j in range(len(num)):
+                    if num[j] == '}':
+                        rez.append(num[i:j+1])
+                        num = num[j+1:]
+                        break
+                break
+
+    return rez[::-1]
+
+
+def tentosym(sys : int, num : int) -> str:
+    
+    if str(num) == '0': return '0'
+
+    more = int(num) > 0
+
+    num = toanotherns(abs(num), sys)[::-1]
+    rez = []
+    flag = False
+    
+    for i in range(len(num)):
+        if int(num[i], sys) + int(flag) > sys // 2:
+            if int(num[i], sys) - sys + int(flag) > 0:
+                rez.append(str(abs(int(num[i], sys) - sys + int(flag))))
+            else:
+                rez.append(rever(str(abs(int(num[i], sys) - sys + int(flag)))))
+            flag = True
+        else:
+            if int(num[i], sys) + int(flag) > 0:
+                rez.append(str(abs(int(num[i], sys) + int(flag))))
+            else:
+                rez.append(rever(str(abs(int(num[i], sys) + int(flag)))))
+            flag = False
+    
+    if flag:
+        rez.append(str(int(flag)))
+
+    if more:
+        return ''.join(rez[::-1])
+    else:
+        return ''.join(map(rever, rez[::-1]))
+
+
+def symtoten(num : list, In : int) -> int:
+    rez = 0
+    
+    for i in range(len(num)):
+        if '{' in num[i]:
+            rez += -int(rever(num[i])) * (In**i)
+        else:
+            rez += int(num[i]) * (In**i)
+
+    return rez
 
 
 def tentofact(num : str) -> str:
@@ -124,18 +209,6 @@ def bergmantoten(num : str) -> str:
     rez = rezbd + rezad
 
     return str(rez)
-
-
-def rmzero(strz : str) -> str:
-    if '1' not in strz:
-        return '0'
-    for i in range(len(strz)):
-        if strz[i] == '1':
-            return strz[i:]
-
-
-def concat(str1 : str, str2 : str) -> str:
-    return str1[: -len(str2)] + str2
 
 
 def fract(num : str, Out, In = 10) -> str:
@@ -212,7 +285,7 @@ if __name__ == "__main__":
 Fib - СС Фибоначчи
 Fact - факториальная СС
 B - СС Бергманна
-
+nC - симметричная СС с нечетным основанием n
 
 
                                     ───────────────────────────────────────██──────
