@@ -20,6 +20,11 @@ for i in alph:
 def main():
     while True:
         num = input('Введите число: ')
+
+        if num == 'ПСЖ':
+            os.system('start https://псж.онлайн')
+            break
+
         In = input("В какой СС введено данное число? ")
         Out = input("В какую СС нужно перевести число? ")
 
